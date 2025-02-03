@@ -13,7 +13,9 @@ namespace SpartaDungeon
         public string Name { get; set; }
         public string Class { get; set; }
         public int AttackDamage { get; set; }
+        public int ExtraAttackDamage { get; set; }
         public int Deffense { get; set; }
+        public int ExtraDeffense { get; set; }
         public int HP { get; set; }
         public int Gold { get; set; }
 
@@ -27,7 +29,9 @@ namespace SpartaDungeon
             Name = name;
             Class = "전사";
             AttackDamage = 10;
+            ExtraAttackDamage = 0;
             Deffense = 5;
+            ExtraDeffense = 0;
             HP = 100;
             Gold = 1500;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static SpartaDungeon.Program;
@@ -11,14 +12,17 @@ namespace SpartaDungeon
     {
         private int choice = -1;
         //생성자에 매개변수를 달아서 GM은 게임매니저임을 이벤트 매니저에게 알려준다.
-        public EventManager(GameManager gameManager)
+        public EventManager(GameManager gameManager, Store store)
         {
             GM = gameManager;
+            STR = store;
         }
         private GameManager GM;
+        private Store STR;
 
         public void StartGame() // 게임시작 플레이어 캐릭터 생성----------------------------------------------------------
         {
+            STR.InitStore();
             Console.WriteLine("당신의 이름을 입력해주세요.");
             GM.player.InitPlayer(Console.ReadLine());  //플레이어 생성
             //시작 멘트
@@ -64,8 +68,22 @@ namespace SpartaDungeon
             Console.WriteLine();
             Console.WriteLine("Lv. " + GM.player.Lv);
             Console.WriteLine($"{GM.player.Name} ({GM.player.Class})");
-            Console.WriteLine("공격력 : " + GM.player.AttackDamage);
-            Console.WriteLine("방어력 : " + GM.player.Deffense);
+            if (GM.player.ExtraAttackDamage > 0)
+            {
+                Console.WriteLine($"공격력 : {GM.player.AttackDamage} (+{GM.player.ExtraAttackDamage})");
+            }
+            else
+            {
+                Console.WriteLine($"공격력 : {GM.player.AttackDamage}");
+            }
+            if (GM.player.ExtraDeffense > 0)
+            {
+                Console.WriteLine($"방어력 : {GM.player.Deffense} (+{GM.player.ExtraDeffense})");
+            }
+            else
+            {
+                Console.WriteLine($"방어력 : {GM.player.Deffense}");
+            }
             Console.WriteLine("체 력 : " + GM.player.HP);
             Console.WriteLine("Gold : " + GM.player.Gold);
             Console.WriteLine();
@@ -91,11 +109,31 @@ namespace SpartaDungeon
             {
                 if (GM.player.items[i].isEquiped == true)
                 {
-                    Console.WriteLine($"- [E]{GM.player.items[i].Name}");
+                    Console.Write($"- [E]{GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"- {GM.player.items[i].Name}");
+                    Console.Write($"- {GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
             }
             Console.WriteLine();
@@ -118,12 +156,8 @@ namespace SpartaDungeon
             }
             choice = -1;
         }
-        public void Store() // 상점 메서드----------------------------------------------------------------------------
-        {
 
-        }
-
-        public void EquipmentManage() // 인벤토리-장착관리 메서드------------------------------------------------------
+        public void EquipmentManage() // 인벤토리-장착관리 메서드------------------------------------------------------인벤토리 아이템의 이름 앞에 번호가 매겨짐
         {
             Console.Clear();
             Console.WriteLine("인벤토리");
@@ -134,11 +168,31 @@ namespace SpartaDungeon
             {
                 if (GM.player.items[i].isEquiped == true)
                 {
-                    Console.WriteLine($"- {i + 1} [E]{GM.player.items[i].Name}");
+                    Console.Write($"- {i + 1} [E]{GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"- {i + 1} {GM.player.items[i].Name}");
+                    Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
             }
             Console.WriteLine();
@@ -156,8 +210,7 @@ namespace SpartaDungeon
                     {
                         Unequip(GM.player.items[choice - 1]);
                     }
-                    Console.Clear();
-                    Console.Clear();
+                    Console.Clear();//--------------------------------------------------장비가 착용된 것을 바로 확인할 수 있음
                     Console.WriteLine("인벤토리");
                     Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
                     Console.WriteLine();
@@ -166,11 +219,31 @@ namespace SpartaDungeon
                     {
                         if (GM.player.items[i].isEquiped == true)
                         {
-                            Console.WriteLine($"- {i + 1} [E]{GM.player.items[i].Name}");
+                            Console.Write($"- {i + 1} [E]{GM.player.items[i].Name}");
+                            if (GM.player.items[i] is Weapon weapon)
+                            {
+                                Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                                Console.WriteLine($" | {weapon.Inform}");
+                            }
+                            else if (GM.player.items[i] is Armor armor)
+                            {
+                                Console.Write($" | 방어력 +{armor.Deffense}");
+                                Console.WriteLine($" | {armor.Inform}");
+                            }
                         }
                         else
                         {
-                            Console.WriteLine($"- {i + 1} {GM.player.items[i].Name}");
+                            Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                            if (GM.player.items[i] is Weapon weapon)
+                            {
+                                Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                                Console.WriteLine($" | {weapon.Inform}");
+                            }
+                            else if (GM.player.items[i] is Armor armor)
+                            {
+                                Console.Write($" | 방어력 +{armor.Deffense}");
+                                Console.WriteLine($" | {armor.Inform}");
+                            }
                         }
                     }
                     Console.WriteLine();
@@ -193,6 +266,107 @@ namespace SpartaDungeon
         public void Unequip(Item item) // 장착 해제
         {
             item.Unequip(GM.player);
+        }
+
+        public void Store() // 상점 메서드----------------------------------------------------------------------------
+        {
+            Console.Clear();
+            Console.WriteLine("상점");
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
+            Console.WriteLine("[보유 골드]");
+            Console.WriteLine($"{GM.player.Gold} G");
+            Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+            for (int i = 0; i < STR.items.Count; i++)
+            {
+                Console.Write($"- {STR.items[i].Name}");
+                if (STR.items[i] is Weapon weapon)
+                {
+                    Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                }
+                else if (STR.items[i] is Armor armor)
+                {
+                    Console.Write($" | 방어력 +{armor.Deffense}");
+                }
+                Console.Write($" | {STR.items[i].Inform}");
+                if (STR.items[i].isSold == false)
+                {
+                    Console.WriteLine($" | {STR.items[i].Price}G");
+                }
+                else
+                {
+                    Console.WriteLine(" | 구매 완료");
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("1. 아이템 구매");
+            Console.WriteLine("0. 나가기");
+            ItemShopping();
+        }
+
+        public void ItemShopping()
+        {
+            choice = int.Parse(Console.ReadLine());//----------------------------------------------아이템 구매를 선택하여 아이템 목록 앞에 번호가 매겨짐
+            if (choice == 1)
+            {
+                Console.Clear();
+                Console.WriteLine("상점");
+                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                Console.WriteLine();
+                Console.WriteLine("[보유 골드]");
+                Console.WriteLine($"{GM.player.Gold} G");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
+                for (int i = 0; i < STR.items.Count; i++)
+                {
+                    Console.Write($"- {i + 1} {STR.items[i].Name}");
+                    if (STR.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                    }
+                    else if (STR.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                    }
+                    Console.Write($" | {STR.items[i].Inform}");
+                    if (STR.items[i].isSold == false)
+                    {
+                        Console.WriteLine($" | {STR.items[i].Price}G");
+                    }
+                    else
+                    {
+                        Console.WriteLine(" | 구매 완료");
+                    }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("0. 나가기");
+            }
+            else if (choice != 0 && choice != 1)
+            {
+                Console.WriteLine("잘못된 입력입니다.(Enter를 눌러 확인)");
+                Console.ReadLine();
+                Store();
+            }
+            while (choice != 0)
+            {
+                choice = int.Parse(Console.ReadLine());
+                if (choice > 0 && choice <= STR.items.Count)
+                {
+                    STR.Buy(STR.items[choice - 1]);
+                    Console.Clear();
+                    ItemShopping();
+                }
+                else if (choice < 0 || choice > STR.items.Count)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    choice = int.Parse(Console.ReadLine());
+                }
+            }
+            choice = -1;
+            Console.Clear();
         }
     }
 }
