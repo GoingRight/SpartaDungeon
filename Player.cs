@@ -17,6 +17,10 @@ namespace SpartaDungeon
         public int HP { get; set; }
         public int Gold { get; set; }
 
+        public List<Item> items = new List<Item>(); // 보유 아이템 리스트
+
+        
+
         public void InitPlayer(string name)
         {
             Lv = 1;

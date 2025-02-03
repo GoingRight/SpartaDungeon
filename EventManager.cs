@@ -87,6 +87,35 @@ namespace SpartaDungeon
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine("[아이템 목록]");
+            for(int i =0;i< GM.player.items.Count;i++)
+            {
+                if (GM.player.items[i].isEquiped == true)
+                {
+                    Console.WriteLine($"- [E] {GM.player.items[i].Name}");
+                }
+                else
+                {
+                    Console.WriteLine($"- {GM.player.items[i].Name}");
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("1. 장착 관리");
+            Console.WriteLine("0. 나가기");
+            choice = int.Parse(Console.ReadLine());
+            while(choice != 0&&choice!= 1)
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+                choice = int.Parse(Console.ReadLine());
+            }
+            if(choice == 1)
+            {
+
+            }
+            else
+            {
+                Console.Clear();
+            }
+            choice = null;
         }
         public void Store()
         {
