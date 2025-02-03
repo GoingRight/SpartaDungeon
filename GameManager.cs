@@ -9,6 +9,7 @@ namespace SpartaDungeon
 {
     public class GameManager
     {
+        public bool isGameOver = false;
         public Player player = new Player();
         public GameManager() 
         {
