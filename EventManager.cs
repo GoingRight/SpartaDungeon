@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -39,6 +40,7 @@ namespace SpartaDungeon
                 Console.WriteLine("1. 상태 보기");
                 Console.WriteLine("2. 인벤토리");
                 Console.WriteLine("3. 상점");
+                Console.WriteLine("4. 휴식하기");
                 switch (int.Parse(Console.ReadLine()))
                 {
                     case 1:
@@ -53,6 +55,11 @@ namespace SpartaDungeon
                         Console.Clear();
                         Store();
                         break;
+                    case 4:
+                        Console.Clear();
+                        Rest();
+                        break;
+                        
                     default:
                         Console.Clear();
                         Console.WriteLine("잘못된 입력입니다. 다시 한번 확인해 주시기 바랍니다.");
@@ -84,7 +91,7 @@ namespace SpartaDungeon
             {
                 Console.WriteLine($"방어력 : {GM.player.Deffense}");
             }
-            Console.WriteLine("체 력 : " + GM.player.HP);
+            Console.WriteLine($"체 력 : {GM.player.HP} / {GM.player.MaxHP}");
             Console.WriteLine("Gold : " + GM.player.Gold);
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
@@ -305,24 +312,24 @@ namespace SpartaDungeon
             Console.WriteLine("1. 아이템 구매");
             Console.WriteLine("0. 나가기");
             choice = int.Parse(Console.ReadLine());
-            while(choice !=0 && choice != 1)
+            while (choice != 0 && choice != 1)
             {
                 Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
                 choice = int.Parse(Console.ReadLine());
             }
-            if(choice == 1)
+            if (choice == 1)
             {
                 choice = -1;
                 ItemShopping();
             }
-            else if(choice == 0)
+            else if (choice == 0)
             {
                 Console.Clear();
             }
             choice = -1;
         }
 
-        public void ItemShopping()
+        public void ItemShopping()//-----------------------------------------------아이템 구매 메서드
         {
             Console.Clear();
             Console.WriteLine("상점");
@@ -393,7 +400,7 @@ namespace SpartaDungeon
                     Console.WriteLine();
                     Console.WriteLine("0. 나가기");
                 }
-                else if(choice <0 || choice > STR.items.Count)
+                else if (choice < 0 || choice > STR.items.Count)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                 }
@@ -402,6 +409,47 @@ namespace SpartaDungeon
                     Console.Clear();
                 }
             }
+        }
+
+        public void Rest() //-------------------------------------휴식 기능
+        {
+            Console.WriteLine("휴식하기");
+            Console.WriteLine($"500 G 를 내면 체력을 100 회복할 수 있습니다. (보유골드 : {GM.player.Gold})");
+            Console.WriteLine();
+            Console.WriteLine("1. 휴식하기");
+            Console.WriteLine("0.나가기");
+            choice = int.Parse(Console.ReadLine());
+            while(choice != 0&&choice != 1)
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+                choice = int.Parse(Console.ReadLine());
+            }
+            if (choice == 1)
+            {
+                if (GM.player.Gold >= 500)
+                {
+                    GM.player.Gold -= 500;
+                    GM.player.HP += 100;
+                    if (GM.player.HP > GM.player.MaxHP)
+                    {
+                        GM.player.HP = GM.player.MaxHP;
+                    }
+                    Console.Clear();
+                    Console.WriteLine("휴식을 완료했습니다.(Enter를 눌러 확인)");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Gold가 부족합니다.(Enter를 눌러 확인)");
+                    Console.ReadLine();
+                }
+            }
+            else if(choice == 0)
+            {
+                Console.Clear();
+            }
+            choice = -1;
         }
     }
 }

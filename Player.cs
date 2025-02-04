@@ -16,6 +16,7 @@ namespace SpartaDungeon
         public int ExtraAttackDamage { get; set; }
         public int Deffense { get; set; }
         public int ExtraDeffense { get; set; }
+        public int MaxHP { get; set; }
         public int HP { get; set; }
         public int Gold { get; set; }
 
@@ -32,7 +33,8 @@ namespace SpartaDungeon
             ExtraAttackDamage = 0;
             Deffense = 5;
             ExtraDeffense = 0;
-            HP = 100;
+            MaxHP = 100;
+            HP = 1;
             Gold = 1500;
         }
     }
