@@ -34,18 +34,24 @@ namespace SpartaDungeon
                 GM.player.Gold -= item.Price;
                 GM.player.items.Add(item);
                 item.isSold = true;
+                Console.Clear();
                 Console.WriteLine("구매를 완료했습니다.(Enter를 눌러 확인)");
                 Console.ReadLine();
+                Console.Clear();
             }
             else if(GM.player.Gold >= item.Price && item.isSold == true)
             {
+                Console.Clear();
                 Console.WriteLine("이미 구매한 아이템입니다.(Enter를 눌러 확인)");
                 Console.ReadLine();
+                Console.Clear();
             }
             else if(GM.player.Gold < item.Price)
             {
+                Console.Clear();
                 Console.WriteLine("Gold가 부족합니다.(Enter를 눌러 확인)");
                 Console.ReadLine();
+                Console.Clear();
             }
         }
         
