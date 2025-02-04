@@ -19,7 +19,8 @@ namespace SpartaDungeon
         public int MaxHP { get; set; }
         public int HP { get; set; }
         public int Gold { get; set; }
-
+        public Item? EquipedWeapon { get; set; }
+        public Item? EquipedArmor { get; set; }
         public List<Item> items = new List<Item>(); // 보유 아이템 리스트
 
         
@@ -35,7 +36,7 @@ namespace SpartaDungeon
             ExtraDeffense = 0;
             MaxHP = 100;
             HP = 1;
-            Gold = 1500;
+            Gold = 3000;
         }
     }
 

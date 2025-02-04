@@ -284,11 +284,46 @@ namespace SpartaDungeon
         }
         public void Equip(Item item) // 장착
         {
-            item.Equip(GM.player);
+            if (item is Weapon weapon)
+            {
+                if(GM.player.EquipedWeapon == null)
+                {
+                    GM.player.EquipedWeapon = weapon;
+                    weapon.Equip(GM.player);
+                }
+                else if(GM.player.EquipedWeapon != null)
+                {
+                    GM.player.EquipedWeapon.Unequip(GM.player);
+                    weapon.Equip(GM.player);
+                    GM.player.EquipedWeapon = weapon;
+                }
+            }
+            else if(item is Armor armor)
+            {
+                if (GM.player.EquipedArmor == null)
+                {
+                    GM.player.EquipedArmor = armor;
+                    armor.Equip(GM.player);
+                }
+                else if (GM.player.EquipedArmor != null)
+                {
+                    GM.player.EquipedArmor.Unequip(GM.player);
+                    armor.Equip(GM.player);
+                    GM.player.EquipedWeapon = armor;
+                }
+            }
         }
         public void Unequip(Item item) // 장착 해제
         {
             item.Unequip(GM.player);
+            if(item is Weapon weapon)
+            {
+                GM.player.EquipedWeapon = null;
+            }
+            else if(item is Armor armor)
+            {
+                GM.player.EquipedArmor = null;
+            }
         }
 
         public void Store() // 상점 메서드----------------------------------------------------------------------------
@@ -453,16 +488,33 @@ namespace SpartaDungeon
             Console.WriteLine("[아이템 목록]");
             for (int i = 0; i < GM.player.items.Count; i++)
             {
-                Console.Write($"- {i + 1} {GM.player.items[i].Name}");
-                if (GM.player.items[i] is Weapon weapon)
+                if (GM.player.items[i].isEquiped == true)
                 {
-                    Console.Write($" | 공격력 +{weapon.AttackDamage}");
-                    Console.WriteLine($" | {weapon.Inform}");
+                    Console.Write($"- {i + 1} [E]{GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
-                else if (GM.player.items[i] is Armor armor)
+                else
                 {
-                    Console.Write($" | 방어력 +{armor.Deffense}");
-                    Console.WriteLine($" | {armor.Inform}");
+                    Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                    if (GM.player.items[i] is Weapon weapon)
+                    {
+                        Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                        Console.WriteLine($" | {weapon.Inform}");
+                    }
+                    else if (GM.player.items[i] is Armor armor)
+                    {
+                        Console.Write($" | 방어력 +{armor.Deffense}");
+                        Console.WriteLine($" | {armor.Inform}");
+                    }
                 }
             }
             Console.WriteLine() ;
@@ -474,6 +526,10 @@ namespace SpartaDungeon
             {
                 if(choice >0 && choice <= GM.player.items.Count)
                 {
+                    if (GM.player.items[choice-1].isEquiped == true)
+                    {
+                        Unequip(GM.player.items[choice - 1]);
+                    }
                     STR.Sell(GM.player.items[choice-1]);
                     Console.Clear() ;
                     Console.WriteLine("상점 - 아이템 판매");
@@ -485,16 +541,33 @@ namespace SpartaDungeon
                     Console.WriteLine("[아이템 목록]");
                     for (int i = 0; i < GM.player.items.Count; i++)
                     {
-                        Console.Write($"- {i + 1} {GM.player.items[i].Name}");
-                        if (GM.player.items[i] is Weapon weapon)
+                        if (GM.player.items[i].isEquiped == true)
                         {
-                            Console.Write($" | 공격력 +{weapon.AttackDamage}");
-                            Console.WriteLine($" | {weapon.Inform}");
+                            Console.Write($"- {i + 1} [E]{GM.player.items[i].Name}");
+                            if (GM.player.items[i] is Weapon weapon)
+                            {
+                                Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                                Console.WriteLine($" | {weapon.Inform}");
+                            }
+                            else if (GM.player.items[i] is Armor armor)
+                            {
+                                Console.Write($" | 방어력 +{armor.Deffense}");
+                                Console.WriteLine($" | {armor.Inform}");
+                            }
                         }
-                        else if (GM.player.items[i] is Armor armor)
+                        else
                         {
-                            Console.Write($" | 방어력 +{armor.Deffense}");
-                            Console.WriteLine($" | {armor.Inform}");
+                            Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                            if (GM.player.items[i] is Weapon weapon)
+                            {
+                                Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                                Console.WriteLine($" | {weapon.Inform}");
+                            }
+                            else if (GM.player.items[i] is Armor armor)
+                            {
+                                Console.Write($" | 방어력 +{armor.Deffense}");
+                                Console.WriteLine($" | {armor.Inform}");
+                            }
                         }
                     }
                     Console.WriteLine();
@@ -554,6 +627,7 @@ namespace SpartaDungeon
             {
                 Console.Clear();
             }
+            Console.Clear();
             choice = -1;
         }
     }
