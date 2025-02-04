@@ -41,6 +41,9 @@ namespace SpartaDungeon
                 Console.WriteLine("2. 인벤토리");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 휴식하기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요");
+                Console.Write(">>");
                 switch (int.Parse(Console.ReadLine()))
                 {
                     case 1:
@@ -59,7 +62,7 @@ namespace SpartaDungeon
                         Console.Clear();
                         Rest();
                         break;
-                        
+
                     default:
                         Console.Clear();
                         Console.WriteLine("잘못된 입력입니다. 다시 한번 확인해 주시기 바랍니다.");
@@ -95,6 +98,9 @@ namespace SpartaDungeon
             Console.WriteLine("Gold : " + GM.player.Gold);
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
             choice = int.Parse(Console.ReadLine());
             while (choice != 0)
             {
@@ -146,6 +152,9 @@ namespace SpartaDungeon
             Console.WriteLine();
             Console.WriteLine("1. 장착 관리");
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
 
             choice = int.Parse(Console.ReadLine()); //선택 입력
             while (choice != 0 && choice != 1)
@@ -204,7 +213,10 @@ namespace SpartaDungeon
                 }
             }
             Console.WriteLine();
-            Console.WriteLine("0. 나가기"); //---------------------------- 여기까지는 인벤토리 메서드와 크게 다르지 않음
+            Console.WriteLine("0. 나가기"); //여기까지는 인벤토리 메서드와 크게 다르지 않음
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
             while (choice != 0) // 처음 메서드에 들어왔을 때 choice 값은 -1
             {
                 choice = int.Parse(Console.ReadLine());
@@ -256,6 +268,9 @@ namespace SpartaDungeon
                     }
                     Console.WriteLine();
                     Console.WriteLine("0. 나가기");
+                    Console.WriteLine();
+                    Console.WriteLine("원하시는 행동을 입력해주세요");
+                    Console.Write(">>");
                 }
                 else if (choice < 0 || choice > GM.player.items.Count)
                 {
@@ -310,9 +325,13 @@ namespace SpartaDungeon
 
             Console.WriteLine();
             Console.WriteLine("1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
             choice = int.Parse(Console.ReadLine());
-            while (choice != 0 && choice != 1)
+            while (choice != 0 && choice != 1 && choice != 2)
             {
                 Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
                 choice = int.Parse(Console.ReadLine());
@@ -322,6 +341,11 @@ namespace SpartaDungeon
                 choice = -1;
                 ItemShopping();
             }
+            else if(choice == 2)
+            {
+                choice = -1;
+                ItemSell();
+            }
             else if (choice == 0)
             {
                 Console.Clear();
@@ -329,10 +353,10 @@ namespace SpartaDungeon
             choice = -1;
         }
 
-        public void ItemShopping()//-----------------------------------------------아이템 구매 메서드
+        public void ItemShopping()//아이템 구매 메서드--------------------------------------------------------------------------------------
         {
             Console.Clear();
-            Console.WriteLine("상점");
+            Console.WriteLine("상점 - 아이템 구매");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
             Console.WriteLine("[보유 골드]");
@@ -363,13 +387,16 @@ namespace SpartaDungeon
 
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
             while (choice != 0)
             {
                 choice = int.Parse(Console.ReadLine());
                 if (choice > 0 && choice <= STR.items.Count)
                 {
                     STR.Buy(STR.items[choice - 1]);  //-------------------------------구매 후 상점에 구매 현황을 업데이트 (Buy 메서드에서 콘솔클리어는 이루어짐)
-                    Console.WriteLine("상점");
+                    Console.WriteLine("상점 - 아이템 구매");
                     Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                     Console.WriteLine();
                     Console.WriteLine("[보유 골드]");
@@ -399,6 +426,9 @@ namespace SpartaDungeon
                     }
                     Console.WriteLine();
                     Console.WriteLine("0. 나가기");
+                    Console.WriteLine();
+                    Console.WriteLine("원하시는 행동을 입력해주세요");
+                    Console.Write(">>");
                 }
                 else if (choice < 0 || choice > STR.items.Count)
                 {
@@ -411,15 +441,90 @@ namespace SpartaDungeon
             }
         }
 
-        public void Rest() //-------------------------------------휴식 기능
+        public void ItemSell()//아이템 판매 메서드------------------------------------------------------------------------------
+        {
+            Console.Clear();
+            Console.WriteLine("상점 - 아이템 판매");
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
+            Console.WriteLine("[보유 골드]");
+            Console.WriteLine($"{GM.player.Gold} G");
+            Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+            for (int i = 0; i < GM.player.items.Count; i++)
+            {
+                Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                if (GM.player.items[i] is Weapon weapon)
+                {
+                    Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                    Console.WriteLine($" | {weapon.Inform}");
+                }
+                else if (GM.player.items[i] is Armor armor)
+                {
+                    Console.Write($" | 방어력 +{armor.Deffense}");
+                    Console.WriteLine($" | {armor.Inform}");
+                }
+            }
+            Console.WriteLine() ;
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            choice = int.Parse( Console.ReadLine() );
+            while(choice != 0)
+            {
+                if(choice >0 && choice <= GM.player.items.Count)
+                {
+                    STR.Sell(GM.player.items[choice-1]);
+                    Console.Clear() ;
+                    Console.WriteLine("상점 - 아이템 판매");
+                    Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                    Console.WriteLine();
+                    Console.WriteLine("[보유 골드]");
+                    Console.WriteLine($"{GM.player.Gold} G");
+                    Console.WriteLine();
+                    Console.WriteLine("[아이템 목록]");
+                    for (int i = 0; i < GM.player.items.Count; i++)
+                    {
+                        Console.Write($"- {i + 1} {GM.player.items[i].Name}");
+                        if (GM.player.items[i] is Weapon weapon)
+                        {
+                            Console.Write($" | 공격력 +{weapon.AttackDamage}");
+                            Console.WriteLine($" | {weapon.Inform}");
+                        }
+                        else if (GM.player.items[i] is Armor armor)
+                        {
+                            Console.Write($" | 방어력 +{armor.Deffense}");
+                            Console.WriteLine($" | {armor.Inform}");
+                        }
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("0. 나가기");
+                    Console.WriteLine();
+                    Console.WriteLine("원하시는 행동을 입력해주세요.");
+                    choice = int.Parse(Console.ReadLine() );
+                }
+                else if(choice <0 || choice > GM.player.items.Count)
+                {
+                    Console.WriteLine("잘못된 입력입니다.");
+                    choice = int.Parse(Console.ReadLine());
+                }
+            }
+            Console.Clear();
+            choice = -1;
+        }
+
+        public void Rest() //휴식 메서드--------------------------------------------------------------------------
         {
             Console.WriteLine("휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 100 회복할 수 있습니다. (보유골드 : {GM.player.Gold})");
             Console.WriteLine();
             Console.WriteLine("1. 휴식하기");
             Console.WriteLine("0.나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요");
+            Console.Write(">>");
             choice = int.Parse(Console.ReadLine());
-            while(choice != 0&&choice != 1)
+            while (choice != 0 && choice != 1)
             {
                 Console.WriteLine("잘못된 입력입니다.");
                 choice = int.Parse(Console.ReadLine());
@@ -445,7 +550,7 @@ namespace SpartaDungeon
                     Console.ReadLine();
                 }
             }
-            else if(choice == 0)
+            else if (choice == 0)
             {
                 Console.Clear();
             }
