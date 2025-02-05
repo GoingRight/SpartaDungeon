@@ -41,6 +41,7 @@ namespace SpartaDungeon
                 Console.WriteLine("2. 인벤토리");
                 Console.WriteLine("3. 상점");
                 Console.WriteLine("4. 휴식하기");
+                Console.WriteLine("5. 던전입장");
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요");
                 Console.Write(">>");
@@ -61,6 +62,9 @@ namespace SpartaDungeon
                     case 4:
                         Console.Clear();
                         Rest();
+                        break;
+                    case 5:
+                        EnterDungeon();
                         break;
 
                     default:
@@ -96,6 +100,15 @@ namespace SpartaDungeon
             }
             Console.WriteLine($"체 력 : {GM.player.HP} / {GM.player.MaxHP}");
             Console.WriteLine("Gold : " + GM.player.Gold);
+            Console.WriteLine();
+            if (GM.player.EquipedWeapon != null)
+            {
+                Console.WriteLine($"장착 중인 무기 : {GM.player.EquipedWeapon.Name}");
+            }
+            if (GM.player.EquipedArmor != null)
+            {
+                Console.WriteLine($"장착 중인 방어구 : {GM.player.EquipedArmor.Name}");
+            }
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
@@ -286,19 +299,19 @@ namespace SpartaDungeon
         {
             if (item is Weapon weapon)
             {
-                if(GM.player.EquipedWeapon == null)
+                if (GM.player.EquipedWeapon == null)
                 {
                     GM.player.EquipedWeapon = weapon;
                     weapon.Equip(GM.player);
                 }
-                else if(GM.player.EquipedWeapon != null)
+                else if (GM.player.EquipedWeapon != null)
                 {
                     GM.player.EquipedWeapon.Unequip(GM.player);
                     weapon.Equip(GM.player);
                     GM.player.EquipedWeapon = weapon;
                 }
             }
-            else if(item is Armor armor)
+            else if (item is Armor armor)
             {
                 if (GM.player.EquipedArmor == null)
                 {
@@ -316,11 +329,11 @@ namespace SpartaDungeon
         public void Unequip(Item item) // 장착 해제
         {
             item.Unequip(GM.player);
-            if(item is Weapon weapon)
+            if (item is Weapon weapon)
             {
                 GM.player.EquipedWeapon = null;
             }
-            else if(item is Armor armor)
+            else if (item is Armor armor)
             {
                 GM.player.EquipedArmor = null;
             }
@@ -376,7 +389,7 @@ namespace SpartaDungeon
                 choice = -1;
                 ItemShopping();
             }
-            else if(choice == 2)
+            else if (choice == 2)
             {
                 choice = -1;
                 ItemSell();
@@ -517,22 +530,22 @@ namespace SpartaDungeon
                     }
                 }
             }
-            Console.WriteLine() ;
+            Console.WriteLine();
             Console.WriteLine("0. 나가기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            choice = int.Parse( Console.ReadLine() );
-            while(choice != 0)
+            choice = int.Parse(Console.ReadLine());
+            while (choice != 0)
             {
-                if(choice >0 && choice <= GM.player.items.Count)
+                if (choice > 0 && choice <= GM.player.items.Count)
                 {
-                    if (GM.player.items[choice-1].isEquiped == true)
+                    if (GM.player.items[choice - 1].isEquiped == true)
                     {
                         Unequip(GM.player.items[choice - 1]);
                     }
-                    STR.Sell(GM.player.items[choice-1]);
-                    Console.Clear() ;
-                    Console.WriteLine("상점 - 아이템 판매");
+                    STR.Sell(GM.player.items[choice - 1]);
+                    Console.Clear();
+                    Console.WriteLine("상점 - 아이템 판매"); //상점 창 최신화를 위한 코드-------------------------------------------------------------------------
                     Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                     Console.WriteLine();
                     Console.WriteLine("[보유 골드]");
@@ -574,9 +587,9 @@ namespace SpartaDungeon
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    choice = int.Parse(Console.ReadLine() );
+                    choice = int.Parse(Console.ReadLine());
                 }
-                else if(choice <0 || choice > GM.player.items.Count)
+                else if (choice < 0 || choice > GM.player.items.Count)
                 {
                     Console.WriteLine("잘못된 입력입니다.");
                     choice = int.Parse(Console.ReadLine());
@@ -586,7 +599,7 @@ namespace SpartaDungeon
             choice = -1;
         }
 
-        public void Rest() //휴식 메서드--------------------------------------------------------------------------
+        public void Rest() //휴식 메서드------------------------------------------------------------------------------------
         {
             Console.WriteLine("휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 100 회복할 수 있습니다. (보유골드 : {GM.player.Gold})");
@@ -629,6 +642,153 @@ namespace SpartaDungeon
             }
             Console.Clear();
             choice = -1;
+        }
+
+        public void EnterDungeon()  //던전 입장 메서드--------------------------------------------------------------------------------------------
+        {
+            Console.Clear();
+            Console.WriteLine("던전입장");
+            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine("1. 쉬운 던전 | 방어력 5 이상 권장");
+            Console.WriteLine("2. 일반 던전 | 방어력 11 이상 권장");
+            Console.WriteLine("3. 어려운 던전 | 방어력 17 이상 권장");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.Write(">>");
+            choice = int.Parse(Console.ReadLine());
+            while (choice != 0 && choice != 1 && choice != 2 && choice != 3)
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+                choice = int.Parse(Console.ReadLine());
+            }
+            Dungeon();
+            choice = -1;
+            choice = int.Parse(Console.ReadLine());
+            while (choice != 0)
+            {
+                Console.WriteLine("잘못된 입력입니다.");
+                choice = int.Parse(Console.ReadLine());
+            }
+            Console.Clear();
+            choice = -1;
+        }
+
+        public void Dungeon() //던전 실행 메서드--------------------------------------------------------------------------------------------------
+        {
+            Console.Clear();
+            Random random = new Random();
+            int difficulty = 0;
+            int successpossibility = random.Next(0, 10);
+            int damagePossibility = random.Next(20, 36);
+            int recommendedDeffense = 0;
+            int basicReward = 0;
+            int extraReward = random.Next(GM.player.AttackDamage, GM.player.AttackDamage * 2 + 1);
+            if (choice == 1)
+            {
+                difficulty = 1;
+                recommendedDeffense = 5;
+                basicReward = 1000;
+                if (GM.player.Deffense >= recommendedDeffense)
+                {
+                    SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                }
+                else
+                {
+                    if (successpossibility < 4)
+                    {
+                        FailDungeon();
+                    }
+                    else
+                    {
+                        SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                    }
+                }
+            }
+            else if (choice == 2)
+            {
+                difficulty = 2;
+                recommendedDeffense = 11;
+                basicReward = 1700;
+                if (GM.player.Deffense >= recommendedDeffense)
+                {
+                    SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                }
+                else
+                {
+                    if (successpossibility < 4)
+                    {
+                        FailDungeon();
+                    }
+                    else
+                    {
+                        SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                    }
+                }
+            }
+            else if (choice == 3)
+            {
+                difficulty = 3;
+                recommendedDeffense = 17;
+                basicReward = 2500;
+                if (GM.player.Deffense >= recommendedDeffense)
+                {
+                    SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                }
+                else
+                {
+                    if (successpossibility < 4)
+                    {
+                        FailDungeon();
+                    }
+                    else
+                    {
+                        SuccessDungeon(damagePossibility, recommendedDeffense, basicReward, extraReward, difficulty);
+                    }
+                }
+            }
+        }
+
+        public void SuccessDungeon(int damagePossibility, int recommendedDeffense, int basicReward, int extraReward, int difficulty)//던전 공략 성공-------------------------------------
+        {
+            int beforeHP = GM.player.HP;
+            int beforeGold = GM.player.Gold;
+            extraReward = extraReward * basicReward / 100;
+            int damage = damagePossibility - (recommendedDeffense - GM.player.Deffense);
+            GM.player.HP -= damage;
+            GM.player.Gold += basicReward;
+            GM.player.Gold += extraReward;
+            Console.WriteLine("던전 클리어");
+            Console.WriteLine("축하합니다!");
+            if (difficulty == 1)
+            {
+                Console.WriteLine("쉬운 던전을 클리어 하였습니다.");
+            }
+            else if (difficulty == 2)
+            {
+                Console.WriteLine("일반 던전을 클리어 하였습니다.");
+            }
+            else if (difficulty == 3)
+            {
+                Console.WriteLine("어려운 던전을 클리어 하였습니다.");
+            }
+            Console.WriteLine();
+            Console.WriteLine("[탐험 결과]");
+            Console.WriteLine($"체력 : {beforeHP} -> {GM.player.HP}");
+            Console.WriteLine($"Gold : {beforeGold} G -> {GM.player.Gold} G");
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+        }
+
+        public void FailDungeon()//던전 공략 실패-----------------------------------------------------------------
+        {
+            GM.player.HP /= 2;
+            Console.WriteLine("던전 공략 실패");
+            Console.WriteLine("던전 공략에 실패하였습니다. 체력이 절반으로 감소합니다.ㅠㅠ");
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+
         }
     }
 }

@@ -21,6 +21,7 @@ namespace SpartaDungeon
         public int Gold { get; set; }
         public Item? EquipedWeapon { get; set; }
         public Item? EquipedArmor { get; set; }
+
         public List<Item> items = new List<Item>(); // 보유 아이템 리스트
 
         
