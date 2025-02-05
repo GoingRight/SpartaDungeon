@@ -10,10 +10,15 @@ namespace SpartaDungeon
     public class GameManager
     {
         public bool isGameOver = false;
-        public Player player = new Player();
+        public Player player;
         public GameManager() 
         {
-
+            player = new Player(this);
+        }
+        public void GameOver()
+        {
+            isGameOver = true;
+            Console.WriteLine("게임 오버");
         }
         
     }

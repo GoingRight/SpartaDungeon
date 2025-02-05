@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 using static SpartaDungeon.Program;
 
 namespace SpartaDungeon
@@ -696,7 +697,7 @@ namespace SpartaDungeon
                 }
                 else
                 {
-                    if (successpossibility < 4)
+                    if (successpossibility < 4) //40% 확률로 실패
                     {
                         FailDungeon();
                     }
@@ -717,7 +718,7 @@ namespace SpartaDungeon
                 }
                 else
                 {
-                    if (successpossibility < 4)
+                    if (successpossibility < 4) //40% 확률로 실패
                     {
                         FailDungeon();
                     }
@@ -738,7 +739,7 @@ namespace SpartaDungeon
                 }
                 else
                 {
-                    if (successpossibility < 4)
+                    if (successpossibility < 4) //40% 확률로 실패
                     {
                         FailDungeon();
                     }
@@ -756,7 +757,8 @@ namespace SpartaDungeon
             int beforeGold = GM.player.Gold;
             extraReward = extraReward * basicReward / 100;
             int damage = damagePossibility - (recommendedDeffense - GM.player.Deffense);
-            GM.player.HP -= damage;
+            if (GM.player.TakeDamage_IsDeath(damage)) return;
+
             GM.player.Gold += basicReward;
             GM.player.Gold += extraReward;
             Console.WriteLine("던전 클리어");
@@ -777,13 +779,14 @@ namespace SpartaDungeon
             Console.WriteLine("[탐험 결과]");
             Console.WriteLine($"체력 : {beforeHP} -> {GM.player.HP}");
             Console.WriteLine($"Gold : {beforeGold} G -> {GM.player.Gold} G");
+            GM.player.GiveEXP(1);
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
         }
 
         public void FailDungeon()//던전 공략 실패-----------------------------------------------------------------
         {
-            GM.player.HP /= 2;
+            if (GM.player.ChangeHP_IsDeath(GM.player.HP/2)) return;
             Console.WriteLine("던전 공략 실패");
             Console.WriteLine("던전 공략에 실패하였습니다. 체력이 절반으로 감소합니다.ㅠㅠ");
             Console.WriteLine();
